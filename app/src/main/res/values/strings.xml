@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">My Simple Ledger</string>
+
+    <string name="amount_hint">Amount</string>
+    <string name="contact_name_hint">Buyer/Seller</string>
+    <string name="description_hint">Description</string>
+    <string name="transaction_type_sell">Sell</string>
+    <string name="transaction_type_buy">Buy</string>
+    <string name="transaction_status_complete">Complete</string>
+    <string name="transaction_status_dena">Dena</string>
+    <string name="transaction_status_paone">Paona</string>
+    <string name="save">save</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_bottom_menu_transaction_list_title">Transactions</string>
+    <string name="home_bottom_menu_transaction_add_title">Add Transaction</string>
+
+    <string name="base_url">www.something.com/</string>
+    <string name="transaction_label">Transaction</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="transaction_left_item_top_margin">10dp</dimen>
+    <dimen name="add_transaction_input_field_top_margin">15dp</dimen>
+    <dimen name="add_transaction_radio_group_left_margin">8dp</dimen>
+    <dimen name="transaction_label_text_size">22sp</dimen>
+</resources>
