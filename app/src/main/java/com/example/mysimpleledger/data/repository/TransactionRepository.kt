@@ -37,9 +37,18 @@ class TransactionRepository @Inject constructor(
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun getAllTransaction(){
-        _transactionUiState.value = UiState.Loading
-        val transactions = transactionDao.getAllTransaction()
-        Log.d(javaClass.name, "got data ${transactions.size}")
-        _transactionUiState.value = UiState.Success(transactions)
+        try {
+            _transactionUiState.value = UiState.Loading
+            val transactions = transactionDao.getAllTransaction()
+            Log.d(javaClass.name, "got data ${transactions.size}")
+            if(transactions.isNotEmpty())
+                _transactionUiState.value = UiState.Success(transactions)
+            else
+                _transactionUiState.value = UiState.Empty
+        }
+        catch (e: Exception){
+            _transactionUiState.value = UiState.Error("failed to load data")
+        }
+
     }
 }

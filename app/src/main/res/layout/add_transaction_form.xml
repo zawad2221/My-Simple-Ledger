@@ -16,7 +16,6 @@
         app:startIconDrawable="@drawable/taka_icon_1"
         android:hint="@string/amount_hint"
         app:startIconTint="@color/black"
-
         >
 
         <com.google.android.material.textfield.TextInputEditText

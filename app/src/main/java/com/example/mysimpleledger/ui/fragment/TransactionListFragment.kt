@@ -45,7 +45,16 @@ class TransactionListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getTransaction()
+        observeTransactionData()
+        swipeRefreshListener()
 
+    }
+
+    private fun swipeRefreshListener(){
+        mFragmentTransactionListBinding.swipeRefresh.setOnRefreshListener {
+            getTransaction()
+            mFragmentTransactionListBinding.swipeRefresh.isRefreshing = false
+        }
     }
 
     private fun getTransaction() {
@@ -53,26 +62,43 @@ class TransactionListFragment : Fragment() {
             mTransactionViewModel.getTransaction()
 
         }
+
+    }
+    private fun showToast(message: String){
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+    private fun observeTransactionData(){
         lifecycleScope.launchWhenCreated {
             mTransactionViewModel.transactionUiState.collect {
                 when (it) {
+                    is UiState.Empty ->{
+                        setProgressBarVisibility(View.GONE)
+                        setIsListEmptyVisibility(View.VISIBLE)
+                        setErrorMessageVisibility(View.GONE)
+                    }
                     is UiState.Success -> {
-                        showSnackBar("Data loaded")
+                        showToast("Data loaded")
                         Log.d(javaClass.name, "success to load data ${it.data[0].Amount}")
                         setProgressBarVisibility(View.GONE)
+                        setIsListEmptyVisibility(View.GONE)
+                        setErrorMessageVisibility(View.GONE)
                         initAdapter()
                         initRecyclerView()
                     }
                     is UiState.Loading -> {
                         Log.d(javaClass.name, "loading data ")
                         setProgressBarVisibility(View.VISIBLE)
+                        setIsListEmptyVisibility(View.GONE)
+                        setErrorMessageVisibility(View.GONE)
                     }
                     is UiState.Error -> {
                         showSnackBar("Failed to load data")
                         Log.d(javaClass.name, "failed to add " + it.message)
                         setProgressBarVisibility(View.GONE)
+                        setErrorMessageVisibility(View.VISIBLE)
+                        setIsListEmptyVisibility(View.GONE)
+
                     }
-                    else -> Unit
                 }
             }
         }
@@ -82,6 +108,12 @@ class TransactionListFragment : Fragment() {
         }
     private fun setProgressBarVisibility(visibility: Int){
         mFragmentTransactionListBinding.progressBar.visibility=visibility
+    }
+    private fun setIsListEmptyVisibility(visibility: Int){
+        mFragmentTransactionListBinding.isTransactionListEmpty.visibility=visibility
+    }
+    private fun setErrorMessageVisibility(visibility: Int){
+        mFragmentTransactionListBinding.errorLoadingData.visibility=visibility
     }
 
 

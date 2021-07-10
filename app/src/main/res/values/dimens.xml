@@ -4,4 +4,10 @@
     <dimen name="add_transaction_input_field_top_margin">15dp</dimen>
     <dimen name="add_transaction_radio_group_left_margin">8dp</dimen>
     <dimen name="transaction_label_text_size">22sp</dimen>
+    <dimen name="backup_status_card_left_right_margin">22dp</dimen>
+    <dimen name="backup_status_card_padding">22dp</dimen>
+    <dimen name="backup_status_text_size">22dp</dimen>
+    <dimen name="backup_status_card_elevation">11dp</dimen>
+    <dimen name="backup_status_card_corner_radius">11dp</dimen>
+    <dimen name="backup_status_card_top_margin">22dp</dimen>
 </resources>

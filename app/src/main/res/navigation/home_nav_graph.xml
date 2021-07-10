@@ -13,12 +13,24 @@
         <action
             android:id="@+id/action_transactionListFragment_to_addTransactionFragment"
             app:destination="@id/addTransactionFragment" />
+        <action
+            android:id="@+id/action_transactionListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/addTransactionFragment"
         android:name="com.example.mysimpleledger.ui.fragment.AddTransactionFragment"
         android:label="fragment_add_transaction"
+        tools:layout="@layout/fragment_add_transaction" >
+        <action
+            android:id="@+id/action_addTransactionFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.mysimpleledger.ui.fragment.SettingsFragment"
+        android:label="fragment_settings"
         tools:layout="@layout/fragment_add_transaction" />
 
 </navigation>
