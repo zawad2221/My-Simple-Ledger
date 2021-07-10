@@ -92,7 +92,7 @@ class TransactionListFragment : Fragment() {
                         setErrorMessageVisibility(View.GONE)
                     }
                     is UiState.Error -> {
-                        showSnackBar("Failed to load data")
+                        showSnackBar(it.message)
                         Log.d(javaClass.name, "failed to add " + it.message)
                         setProgressBarVisibility(View.GONE)
                         setErrorMessageVisibility(View.VISIBLE)
@@ -103,9 +103,9 @@ class TransactionListFragment : Fragment() {
             }
         }
     }
-        private fun showSnackBar(message: String){
+    private fun showSnackBar(message: String){
             Snackbar.make(mFragmentTransactionListBinding.root, message, Snackbar.LENGTH_LONG).show()
-        }
+    }
     private fun setProgressBarVisibility(visibility: Int){
         mFragmentTransactionListBinding.progressBar.visibility=visibility
     }

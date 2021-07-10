@@ -28,11 +28,17 @@ class TransactionRepository @Inject constructor(
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun saveTransaction(transactions: List<Transaction>){
-        _newTransactionUiState.value = UiState.Loading
-        Log.d(javaClass.name, "save transaction in repository")
+        try {
+            _newTransactionUiState.value = UiState.Loading
+            Log.d(javaClass.name, "save transaction in repository")
 
-        transactionDao.insertTransactions(transactions)
-        _newTransactionUiState.value = UiState.Success(transactions)
+            transactionDao.insertTransactions(transactions)
+            _newTransactionUiState.value = UiState.Success(transactions)
+        }
+        catch (e: Exception){
+            _newTransactionUiState.value = UiState.Error("failed to add")
+        }
+
     }
     @Suppress("RedundantSuspendModifier")
     @WorkerThread

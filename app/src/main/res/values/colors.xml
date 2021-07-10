@@ -8,8 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="paona_color">#E4C2C0</color>
-    <color name="dena_color">#A2DF97</color>
+    <color name="paona_color">#A2DF97</color>
+    <color name="dena_color">#E4C2C0</color>
     <color name="complete_color">#B9C1DC</color>
 
     <color name="textColor">#000000</color>
