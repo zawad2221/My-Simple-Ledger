@@ -7,7 +7,7 @@
     <item android:id="@+id/addTransactionFragment"
         android:icon="@drawable/add_icon"
         android:title="@string/home_bottom_menu_transaction_add_title"/>
-    <item android:id="@+id/settingsFragment"
-        android:icon="@drawable/settings"
-        android:title="@string/home_bottom_menu_settings_title"/>
+<!--    <item android:id="@+id/settingsFragment"-->
+<!--        android:icon="@drawable/settings"-->
+<!--        android:title="@string/menu_settings_title"/>-->
 </menu>
