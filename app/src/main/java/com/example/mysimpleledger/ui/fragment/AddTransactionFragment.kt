@@ -56,6 +56,8 @@ class AddTransactionFragment : Fragment() {
         return mFragmentAddTransactionBinding.root
     }
 
+    
+
     @InternalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
