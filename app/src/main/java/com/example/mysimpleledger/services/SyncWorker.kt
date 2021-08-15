@@ -45,9 +45,19 @@ class SyncWorker @AssistedInject constructor(
                             val result = data?.getContentIfNotHandled()
                             result?.let { notNullResult->
                                 notNullResult as List<Transaction>
-                                Log.d(javaClass.name, " ...............worker fetch sqlite data: "+ notNullResult[0].toString())
-                                notNullResult[0].Amount+=1
-                                saveTransactionInServer(notNullResult)
+                                if(notNullResult.isEmpty()){
+                                    Log.d(javaClass.name, "no new data got")
+                                }
+                                else{
+                                    Log.d(javaClass.name, " ...............worker fetch sqlite data: "+ notNullResult[0].toString())
+                                    for(transaction in notNullResult){
+                                        saveTransactionInServer(transaction)
+                                    }
+                                    Log.d(javaClass.name,"000000000000000000000000000000000000000000000000000000000")
+
+                                }
+
+
 
                             }
                         }
@@ -60,21 +70,14 @@ class SyncWorker @AssistedInject constructor(
         }
     }
 
-    private fun getTransactionBody(transaction: Transaction): TransactionBody{
-        return TransactionBody(
-                Amount = transaction.Amount,
-                UserId = transaction.UserId,
-                Contact = transaction.Contact,
-                Date = transaction.Date,
-                Description = transaction.Description
-        )
-    }
 
-    private suspend fun saveTransactionInServer(transactions: List<Transaction>){
+
+    private suspend fun saveTransactionInServer(transaction: Transaction){
+        Log.d(javaClass.name,"###############################################################################")
         var serverJob: Job?=null
-        transactions[0].UserId = "rifat.rz@gmail.com"
-        Log.d("MSL", "transaction: ${transactions[0].toString()}")
-        transactionRepository.saveDataInServer(transactions[0])
+        transaction.UserId = "rifat.rz@gmail.com"
+        Log.d("MSL", "transaction: ${transaction.toString()}")
+        transactionRepository.saveDataInServer(transaction)
         serverJob = CoroutineScope(Dispatchers.IO).launch {
             transactionRepository.newTransactionServerUiState.collect {
                 when(it){
@@ -83,8 +86,8 @@ class SyncWorker @AssistedInject constructor(
                             (it as Transaction).Amount = 91f
                             Log.d(javaClass.name, "MSL: seved response ${it.toString()}")
                             setIsBackup(it, true)
-                            setOffLineId(it, transactions[0]?.offlineId)
-                            setDate(it, transactions[0].Date)
+                            setOffLineId(it, transaction?.offlineId)
+                            setDate(it, transaction.Date)
                             updateTransaction(listOf(it))
                         }
                     }

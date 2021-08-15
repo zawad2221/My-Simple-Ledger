@@ -96,9 +96,9 @@ class TransactionRepository @Inject constructor(
                     transactionDao.getNonsyncData()
                 }.onSuccess {
                     withContext(Main){
-                        if(it.isNotEmpty())_newAllTransactionUiState.value = TestUiState.Success(Event(it as List<Transaction>))
+                        _newAllTransactionUiState.value = TestUiState.Success(Event(it as List<Transaction>))
                         //jobOffline?.cancel()
-                        else _newAllTransactionUiState.value = TestUiState.Empty
+                        //else _newAllTransactionUiState.value = TestUiState.Empty
                     }
                 }.onFailure {
                     _newAllTransactionUiState.value = TestUiState.Error(Event("failed to load data"))

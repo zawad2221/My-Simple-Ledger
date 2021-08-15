@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registration_nag_graph"
+    app:startDestination="@id/registrationFormFragment">
+
+    <fragment
+        android:id="@+id/registrationFormFragment"
+        android:name="com.example.mysimpleledger.ui.registration.fragment.RegistrationFormFragment"
+        android:label="fragment_registration_form"
+        tools:layout="@layout/fragment_registration_form" >
+        <action
+            android:id="@+id/action_registrationFormFragment_to_otpCodeFragment"
+            app:destination="@id/otpCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/otpCodeFragment"
+        android:name="com.example.mysimpleledger.ui.registration.fragment.OtpCodeFragment"
+        android:label="fragment_otp_code"
+        tools:layout="@layout/fragment_otp_code" />
+</navigation>

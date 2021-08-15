@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.work.Configuration
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.example.mysimpleledger.R
 import com.example.mysimpleledger.databinding.FragmentSettingsBinding
 import com.example.mysimpleledger.services.SyncWorker
@@ -36,6 +34,7 @@ class SettingsFragment : Fragment() {
         mFragmentSettingsBinding.backupNow.setOnClickListener {
             //val work = OneTimeWorkRequest.from(SyncWorker::class.java)
             val work = OneTimeWorkRequest.Builder(SyncWorker::class.java)
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                     .build()
 
             // provide custom configuration
