@@ -21,8 +21,8 @@
     <string name="backup_status_backup">"All data is backed up. "</string>
     <string name="backup_status_not_backup">Not all data is backed up.</string>
     <string name="backup_last_backup_tag">Last backup</string>
-    <string name="auto_backup_label">Auto Backup</string>
+    <string name="auto_sync_label">Auto Sync</string>
     <string name="no_transaction_tag">No transaction to show.</string>
     <string name="errorLoadingData">Error in loading data. <br/>Swipe down to reload.</string>
-    <string name="backup_now">Backup Now</string>
+    <string name="sync_now">Sync Now</string>
 </resources>

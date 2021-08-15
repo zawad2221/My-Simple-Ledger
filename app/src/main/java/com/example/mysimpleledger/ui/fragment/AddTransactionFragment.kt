@@ -15,6 +15,7 @@ import com.example.mysimpleledger.databinding.AddTransactionFormBinding
 import com.example.mysimpleledger.databinding.FragmentAddTransactionBinding
 import com.example.mysimpleledger.ui.UiState
 import com.example.mysimpleledger.ui.view_model.TransactionViewModel
+import com.example.mysimpleledger.utils.convertDateToServerFormat
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -247,7 +248,7 @@ class AddTransactionFragment : Fragment() {
     private fun getTransaction(): Transaction{
         //var transaction = Transaction("33"," ", 3F, "ddd", "dd",1, 1, "dd" )
 
-        return Transaction(getDate(), getAmount().toInt().toFloat(), getDescription(), getContact(), getTransactionContactType(), getTransactionStatus())
+        return Transaction(convertDateToServerFormat(getDate()), getAmount().toInt().toFloat(), getDescription(), getContact(), getTransactionContactType(), getTransactionStatus())
     }
 
 
