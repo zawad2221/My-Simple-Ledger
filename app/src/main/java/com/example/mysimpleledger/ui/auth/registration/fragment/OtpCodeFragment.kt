@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.registration.fragment
+package com.example.mysimpleledger.ui.auth.registration.fragment
 
 import android.os.Build
 import android.os.Bundle

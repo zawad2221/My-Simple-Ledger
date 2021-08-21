@@ -20,6 +20,7 @@ class SyncWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val transactionRepository: TransactionRepository
 ) : CoroutineWorker(appContext, workerParams) {
+    private var numberOfDataToBackup: Int = 0
     var job: Job?=null
     init {
 
@@ -49,6 +50,7 @@ class SyncWorker @AssistedInject constructor(
                                     Log.d(javaClass.name, "no new data got")
                                 }
                                 else{
+                                    numberOfDataToBackup = notNullResult.size
                                     Log.d(javaClass.name, " ...............worker fetch sqlite data: "+ notNullResult[0].toString())
                                     for(transaction in notNullResult){
                                         saveTransactionInServer(transaction)

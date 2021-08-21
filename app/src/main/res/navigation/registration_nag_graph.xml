@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/registrationFormFragment"
-        android:name="com.example.mysimpleledger.ui.registration.fragment.RegistrationFormFragment"
+        android:name="com.example.mysimpleledger.ui.auth.registration.fragment.RegistrationFormFragment"
         android:label="fragment_registration_form"
         tools:layout="@layout/fragment_registration_form" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/otpCodeFragment"
-        android:name="com.example.mysimpleledger.ui.registration.fragment.OtpCodeFragment"
+        android:name="com.example.mysimpleledger.ui.auth.registration.fragment.OtpCodeFragment"
         android:label="fragment_otp_code"
         tools:layout="@layout/fragment_otp_code" />
 </navigation>

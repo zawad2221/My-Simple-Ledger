@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.registration.fragment
+package com.example.mysimpleledger.ui.auth.registration.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.mysimpleledger.R
 import com.example.mysimpleledger.databinding.FragmentRegistrationFormBinding
-import com.example.mysimpleledger.ui.login.LoginActivity
+import com.example.mysimpleledger.ui.auth.login.LoginActivity
 
 
 class RegistrationFormFragment :
