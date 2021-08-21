@@ -7,28 +7,22 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "transactions")
 data class Transaction(
-
-
         var Date: String,
         var Amount: Float,
         var Description: String,
         var Contact: String,
         var Type: Int,
-        var Status: Int
+        var Status: Int,
+        var Id: String? = null,
+        @PrimaryKey(autoGenerate = true) var offlineId: Int? = null,
+        var isBackup: Boolean? = false,
+        var UserId: String? = null
 
 )
 {
-    @PrimaryKey(autoGenerate = true) var offlineId: Int? = null
-    var Id: String? = null
-    var isBackup: Boolean? = null
-    var UserId: String? = null
-//
-//    companion object{
-//        @BindingAdapter("android:setAmountInView")
-//        @JvmStatic
-//        fun setAmountInView(textView: TextView, amount: Float){
-//            textView.text = amount.toString()
-//        }
-//    }
+
+
+
+
 
 }

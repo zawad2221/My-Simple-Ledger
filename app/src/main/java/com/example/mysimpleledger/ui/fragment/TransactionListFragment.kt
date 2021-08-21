@@ -11,11 +11,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mysimpleledger.adapter.TransactionRecyclerAdapter
+import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.ui.view_model.TransactionViewModel
 import com.example.mysimpleledger.databinding.FragmentTransactionListBinding
+import com.example.mysimpleledger.ui.TestUiState
 import com.example.mysimpleledger.ui.UiState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -26,6 +31,8 @@ class TransactionListFragment : Fragment() {
     lateinit var transactionRecyclerAdapter: TransactionRecyclerAdapter
 
     private val mTransactionViewModel: TransactionViewModel by viewModels()
+    var job: Job? = null
+    var dataGetJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +51,13 @@ class TransactionListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getTransaction()
-        observeTransactionData()
+        if(savedInstanceState==null){
+            getTransaction()
+        }
+        else{
+            initAdapter()
+            initRecyclerView()
+        }
         swipeRefreshListener()
 
     }
@@ -58,45 +70,80 @@ class TransactionListFragment : Fragment() {
     }
 
     private fun getTransaction() {
-        lifecycleScope.launch {
+        dataGetJob = lifecycleScope.launch {
             mTransactionViewModel.getTransaction()
-
         }
+        observeTransactionData(dataGetJob)
+
 
     }
     private fun showToast(message: String){
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
-    private fun observeTransactionData(){
-        lifecycleScope.launchWhenCreated {
-            mTransactionViewModel.transactionUiState.collect {
-                when (it) {
-                    is UiState.Empty ->{
-                        setProgressBarVisibility(View.GONE)
-                        setIsListEmptyVisibility(View.VISIBLE)
-                        setErrorMessageVisibility(View.GONE)
+
+    private fun showEmptyState(){
+        setProgressBarVisibility(View.GONE)
+        setIsListEmptyVisibility(View.VISIBLE)
+        setErrorMessageVisibility(View.GONE)
+    }
+
+    private fun observeTransactionData(dataGetJob: Job?){
+        job = lifecycleScope.launchWhenCreated {
+            mTransactionViewModel.transactionUiState.collect {uiState->
+                Log.d(javaClass.name, "data collected in transaction frag $uiState")
+                when (uiState) {
+                    is TestUiState.Empty ->{
+                        showEmptyState()
                     }
-                    is UiState.Success -> {
-                        showToast("Data loaded")
-                        Log.d(javaClass.name, "success to load data ${it.data[0].Amount}")
-                        setProgressBarVisibility(View.GONE)
-                        setIsListEmptyVisibility(View.GONE)
-                        setErrorMessageVisibility(View.GONE)
-                        initAdapter()
-                        initRecyclerView()
+                    is TestUiState.Success -> {
+                        val data = uiState.data?.getContentIfNotHandled()
+                        if(data==null){
+                            Log.d(javaClass.name, "data collected in 11")
+                            if(mTransactionViewModel.transactionList.value==null|| mTransactionViewModel.transactionList.value!!.isEmpty()) {
+                                showEmptyState()
+                            }
+                            else{
+                                setProgressBarVisibility(View.GONE)
+                                setIsListEmptyVisibility(View.GONE)
+                                setErrorMessageVisibility(View.GONE)
+                                initAdapter()
+                                initRecyclerView()
+                            }
+                        }
+                        else{
+                            if((data as List<Transaction>).isEmpty()){
+                                Log.d(javaClass.name, "empty list ${data.size}")
+                                showEmptyState()
+                            }
+                            else{
+                                mTransactionViewModel.transactionListLiveDate.value = data
+                                showToast("Data loaded")
+                                setProgressBarVisibility(View.GONE)
+                                setIsListEmptyVisibility(View.GONE)
+                                setErrorMessageVisibility(View.GONE)
+                                initAdapter()
+                                initRecyclerView()
+                            }
+                        }
+                        job?.cancel()
+                        dataGetJob?.cancel()
+
                     }
-                    is UiState.Loading -> {
+                    is TestUiState.Loading -> {
                         Log.d(javaClass.name, "loading data ")
                         setProgressBarVisibility(View.VISIBLE)
                         setIsListEmptyVisibility(View.GONE)
                         setErrorMessageVisibility(View.GONE)
                     }
-                    is UiState.Error -> {
-                        showSnackBar(it.message)
-                        Log.d(javaClass.name, "failed to add " + it.message)
+                    is TestUiState.Error -> {
+                        showSnackBar("failed to load data")
+                        Log.d(javaClass.name, "failed to add " + uiState.message)
                         setProgressBarVisibility(View.GONE)
                         setErrorMessageVisibility(View.VISIBLE)
                         setIsListEmptyVisibility(View.GONE)
+                        job?.cancel()
+                        dataGetJob?.cancel()
+                        mTransactionViewModel.job?.cancel()
 
                     }
                 }

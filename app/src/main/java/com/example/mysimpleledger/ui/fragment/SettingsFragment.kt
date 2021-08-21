@@ -5,19 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.work.*
 import com.example.mysimpleledger.R
 import com.example.mysimpleledger.databinding.FragmentSettingsBinding
+import com.example.mysimpleledger.services.SyncWorker
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
    private lateinit var mFragmentSettingsBinding: FragmentSettingsBinding
 
@@ -36,6 +30,21 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mFragmentSettingsBinding.toolBar.setNavigationOnClickListener {
             onBackPress()
+        }
+        mFragmentSettingsBinding.backupNow.setOnClickListener {
+            //val work = OneTimeWorkRequest.from(SyncWorker::class.java)
+            val work = OneTimeWorkRequest.Builder(SyncWorker::class.java)
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .build()
+
+            // provide custom configuration
+            val myConfig = Configuration.Builder()
+                    .setMinimumLoggingLevel(android.util.Log.INFO)
+                    .build()
+
+            // initialize WorkManager
+            //activity?.applicationContext?.let { it1 -> WorkManager.initialize(it1, myConfig) }
+            activity?.let { it1 -> WorkManager.getInstance(it1.applicationContext).beginWith(work).enqueue() }
         }
     }
 

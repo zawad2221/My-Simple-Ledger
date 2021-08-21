@@ -1,9 +1,6 @@
 package com.example.mysimpleledger.data.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.mysimpleledger.data.model.Transaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,4 +13,10 @@ interface TransactionDao {
 
     @Insert()
     suspend fun insertTransactions(transactions: List<Transaction>)
+
+    @Query("SELECT * FROM transactions WHERE NULLIF(Id, '') IS NULL")
+    suspend fun getNonsyncData(): List<Transaction>
+
+    @Update()
+    suspend fun updateTransactions(transactions: List<Transaction>)
 }

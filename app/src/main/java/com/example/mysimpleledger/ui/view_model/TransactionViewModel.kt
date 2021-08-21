@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.data.repository.TransactionRepository
+import com.example.mysimpleledger.ui.TestUiState
 import com.example.mysimpleledger.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -20,9 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionViewModel @Inject constructor(private val transactionRepository: TransactionRepository): ViewModel() {
 
+    var job: Job? = null
 
-
-    private val transactionListLiveDate = MutableLiveData<List<Transaction>>()
+    val transactionListLiveDate = MutableLiveData<List<Transaction>>()
     val transactionList: LiveData<List<Transaction>> = transactionListLiveDate
 
     //add transaction data
@@ -30,8 +32,8 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
     val newTransactionUiState: StateFlow<UiState> = _newTransactionUiState
 
     //transaction data
-    private val _transactionUiState = MutableStateFlow<UiState>(UiState.Empty)
-    val transactionUiState: StateFlow<UiState> = _transactionUiState
+    private val _transactionUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
+    val transactionUiState: StateFlow<TestUiState> = _transactionUiState
 
     fun fakeData(){
 //        val transaction: Transaction = Transaction(1222,null,"2021-06-18",1000.0F,"Complete transaction","Rfiat",0,0,"rifat@gmail.com",null)
@@ -59,20 +61,26 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
         }
     }
 
+
     suspend fun getTransaction(){
-        viewModelScope.launch {
-            transactionRepository.getAllTransaction()
-        }
-        transactionRepository.transactionUiState.collect{
-            Log.d(javaClass.name, "got data update $it")
-            _transactionUiState.value = it
-            when(it){
-                is UiState.Success->{
-                    transactionListLiveDate.value = it.data
+        job = viewModelScope.launch {
+            transactionRepository.getAllTransactionTest()
+            transactionRepository.transactionUiStateTest.collect{
+                Log.d(javaClass.name, "got data update $it")
+                _transactionUiState.value = it
+                when(it){
+                    is TestUiState.Success, is TestUiState.Error->{
+                        //job?.cancel()
+
+                    }
                 }
-                else -> Unit
+
+
             }
         }
+
+
+
     }
 
 }
