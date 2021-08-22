@@ -182,16 +182,14 @@ class RegistrationFormFragment :
                         else{
                             showSnackBar("Successfully Register")
                         }
-
-
                     }
                     is TestUiState.Loading -> {
                         Log.d(javaClass.name, "loading data ")
 
                     }
                     is TestUiState.Error -> {
-                        Log.d(javaClass.name, "failed to add " + uiState.message)
-                        showSnackBar("Successfully Register")
+                        Log.d(javaClass.name, "failed to add " + uiState.message?.getContentIfNotHandled())
+                        showSnackBar("Failed to Register")
 
                     }
                 }
