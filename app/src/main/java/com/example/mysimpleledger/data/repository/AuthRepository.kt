@@ -11,8 +11,9 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class AuthRepository(val authApi: AuthApi) {
+class AuthRepository @Inject constructor(val authApi: AuthApi) {
 
     private val _registrationDataState = MutableStateFlow<TestUiState>(TestUiState.Empty)
     val registrationDataState: StateFlow<TestUiState> = _registrationDataState

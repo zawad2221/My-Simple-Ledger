@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.MenuItem
 
 import com.example.mysimpleledger.databinding.ActivityRegistrationBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 public class RegistrationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegistrationBinding
 

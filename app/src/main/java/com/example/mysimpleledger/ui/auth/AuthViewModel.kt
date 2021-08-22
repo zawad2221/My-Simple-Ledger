@@ -6,6 +6,7 @@ import com.example.mysimpleledger.data.model.request.body.RegistrationBody
 import com.example.mysimpleledger.data.repository.AuthRepository
 import com.example.mysimpleledger.ui.TestUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(private val authRepository: AuthRepository): ViewModel() {
+class AuthViewModel @Inject constructor(private val authRepository: AuthRepository): ViewModel() {
     var job: Job? = null
 
     var registrationBody: RegistrationBody? = null
@@ -23,6 +24,7 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
     private val _registrationDataState = MutableStateFlow<TestUiState>(TestUiState.Empty)
     val registrationDataState: StateFlow<TestUiState> = _registrationDataState
 
+    @InternalCoroutinesApi
     suspend fun registration(registrationBody: RegistrationBody){
         job = viewModelScope.launch {
             authRepository.register(registrationBody)
