@@ -1,6 +1,8 @@
 package com.example.mysimpleledger.data.repository
 
+import com.example.mysimpleledger.data.model.request.body.LoginBody
 import com.example.mysimpleledger.data.model.request.body.RegistrationBody
+import com.example.mysimpleledger.data.model.request.response.LoginResponse
 import com.example.mysimpleledger.data.model.request.response.RegistrationResponse
 import com.example.mysimpleledger.network.api.AuthApi
 import com.example.mysimpleledger.ui.TestUiState
@@ -17,6 +19,9 @@ class AuthRepository @Inject constructor(val authApi: AuthApi) {
 
     private val _registrationDataState = MutableStateFlow<TestUiState>(TestUiState.Empty)
     val registrationDataState: StateFlow<TestUiState> = _registrationDataState
+
+    private val _loginDataState = MutableStateFlow<TestUiState>(TestUiState.Empty)
+    val loginDataState: StateFlow<TestUiState> = _loginDataState
 
     var job: CompletableJob? = null
 
@@ -38,6 +43,31 @@ class AuthRepository @Inject constructor(val authApi: AuthApi) {
                     }
                 }.onFailure {
                     _registrationDataState.value = TestUiState.Error(Event(it.message!!))
+                }
+                theJob.complete()
+            }
+        }
+    }
+
+    suspend fun login(loginBody: LoginBody){
+        job = Job()
+        job?.let { theJob->
+            CoroutineScope(IO + theJob).launch {
+                kotlin.runCatching {
+                    withContext(Main){
+                        _loginDataState.value = TestUiState.Loading
+                    }
+                    authApi.login(loginBody)
+                }.onSuccess {
+                    if(it.isSuccessful && it.body()!=null){
+                        _loginDataState.value = TestUiState.Success(Event(it.body() as LoginResponse))
+
+                    }
+                    else{
+                        _loginDataState.value = TestUiState.Error(Event("Failed to login"))
+                    }
+                }.onFailure {
+                    _loginDataState.value = TestUiState.Error(Event(it.message!!))
                 }
                 theJob.complete()
             }
