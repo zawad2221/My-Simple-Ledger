@@ -6,36 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.registration.fragment.RegistrationFormFragment">
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_user_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:boxBackgroundMode="outline"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:hintTextColor="@color/textColor"
-        android:hint="@string/user_name"
-        app:boxStrokeColor="@color/textColor"
-        >
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textColor"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:textCursorDrawable="@drawable/text_cursor"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/til_user_name"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

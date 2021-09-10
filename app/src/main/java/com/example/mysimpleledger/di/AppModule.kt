@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.data.repository.AuthRepository
 import com.example.mysimpleledger.data.repository.TransactionRepository
 import com.example.mysimpleledger.data.room.TransactionDatabase
@@ -65,8 +66,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreferencesEditor( androidApplication: Application) =
+    fun provideSharedPreferencesEditor( androidApplication: Application): SharedPreferences.Editor =
             getSharedPrefs(androidApplication).edit()
+
+    @Provides
+    @Singleton
+    fun providePrefManager(sharedPref: SharedPreferences,
+                           sharedPreferencesEditor: SharedPreferences.Editor) = PrefManager(
+        sharedPref,
+        sharedPreferencesEditor
+    )
 
 
 }

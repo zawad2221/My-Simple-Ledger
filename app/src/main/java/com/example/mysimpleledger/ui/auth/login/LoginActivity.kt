@@ -9,8 +9,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.data.model.request.body.LoginBody
-import com.example.mysimpleledger.data.model.request.body.RegistrationBody
+import com.example.mysimpleledger.data.model.request.response.LoginResponse
 
 import com.example.mysimpleledger.databinding.ActivityLoginBinding
 import com.example.mysimpleledger.ui.TestUiState
@@ -18,17 +19,20 @@ import com.example.mysimpleledger.ui.auth.AuthViewModel
 import com.example.mysimpleledger.ui.auth.registration.RegistrationActivity
 import com.example.mysimpleledger.utils.showErrorInTextInputLayout
 import com.example.mysimpleledger.utils.showSnackBar
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity: AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityLoginBinding
 
     private val viewModel: AuthViewModel by viewModels()
+
+    @Inject
+    lateinit var prefManager: PrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,11 +61,11 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    private fun getUserName(): String {
-        return binding.etUserName.text.toString()
+    private fun getEmail(): String {
+        return binding.etEmail.text.toString()
     }
-    private fun isUserNameValid(): Boolean{
-        return getUserName().isNotEmpty()
+    private fun isEmailValid(): Boolean{
+        return (getEmail().isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(getEmail()).matches())
     }
     private fun getPassword(): String{
         return binding.etPassword.text.toString()
@@ -72,7 +76,7 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
 
     private fun getLoginBodyFromView(): LoginBody{
         return LoginBody(
-                userName = getUserName(),
+                userName = getEmail(),
                 password = getPassword()
         )
     }
@@ -80,8 +84,8 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
 
     @InternalCoroutinesApi
     private fun signInClick(){
-        if(!isUserNameValid()){
-            showErrorInTextInputLayout(binding.tilUserName, "Required field")
+        if(!isEmailValid()){
+            showErrorInTextInputLayout(binding.tilEmail, "Required field")
             return
         }
         if(!isPasswordValid()){
@@ -93,6 +97,7 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
 
     @InternalCoroutinesApi
     private fun loginObserve(loginBody: LoginBody){
+        viewModel.cancelJob()
         lifecycleScope.launch {
             viewModel.login(loginBody)
             viewModel.loginDataState.collect {uiState->
@@ -100,12 +105,13 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
                     is TestUiState.Empty ->{
                     }
                     is TestUiState.Success -> {
-                        val data = uiState.data?.getContentIfNotHandled()
+                        val data = uiState.data?.getContentIfNotHandled() as LoginResponse
                         if(data==null){
                             Log.d(javaClass.name, "data collected in 11")
 
                         }
                         else{
+                            data.token?.let { prefManager.saveToken(it) }
                             showSnackBar(binding.root, "Successfully Login")
                         }
                     }
@@ -135,5 +141,10 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
                 startActivity(Intent(this, RegistrationActivity::class.java))
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.cancelJob()
     }
 }

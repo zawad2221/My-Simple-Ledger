@@ -99,12 +99,6 @@ class RegistrationFormFragment :
         return (pass.matches(regex.toRegex()))
     }
 
-    private fun getUserName():String{
-        return binding.etUserName.text.toString()
-    }
-    private fun isUserNameValid():Boolean{
-        return getUserName().isNotEmpty()
-    }
     private fun getEmail():String{
         return binding.etEmail.text.toString()
     }
@@ -121,13 +115,6 @@ class RegistrationFormFragment :
     @InternalCoroutinesApi
     private fun signUpClick(){
         var valid = true
-        if(!isUserNameValid()){
-            showErrorInTextInputLayout(binding.tilUserName, "Invalid Input")
-            valid = false
-        }
-        else{
-            showErrorInTextInputLayout(binding.tilUserName, null)
-        }
         if(!isValidEmail()){
             showErrorInTextInputLayout(binding.tilEmail, "Invalid Input")
             valid = false
@@ -199,7 +186,7 @@ class RegistrationFormFragment :
     }
     private fun getRegBodyFromView(): RegistrationBody{
         return RegistrationBody(
-                UserName = getUserName(),
+                UserName = getEmail(),
                 Email = getEmail(),
                 Password = getPassword()
         )
