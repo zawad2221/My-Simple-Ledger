@@ -5,5 +5,5 @@ import java.io.Serializable
 data class LoginResponse(
         var token: String? =null,
         var expiration: String? = null,
-        var userId: String? = null
+        var Status: String? = null
 )

@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.fragment
+package com.example.mysimpleledger.view.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +13,8 @@ import com.example.mysimpleledger.R
 import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.databinding.AddTransactionFormBinding
 import com.example.mysimpleledger.databinding.FragmentAddTransactionBinding
-import com.example.mysimpleledger.ui.UiState
-import com.example.mysimpleledger.ui.view_model.TransactionViewModel
+import com.example.mysimpleledger.view.UiState
+import com.example.mysimpleledger.view.view_model.TransactionViewModel
 import com.example.mysimpleledger.utils.convertDateToServerFormat
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar

@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.auth.registration;
+package com.example.mysimpleledger.view.auth.registration;
 
 import androidx.appcompat.app.AppCompatActivity;
 

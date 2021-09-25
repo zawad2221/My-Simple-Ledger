@@ -1,7 +1,6 @@
-package com.example.mysimpleledger.network.api
+package com.example.mysimpleledger.data.api
 
 import com.example.mysimpleledger.data.model.Transaction
-import com.example.mysimpleledger.data.model.request.TransactionBody
 import retrofit2.Response
 import retrofit2.http.*
 

@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.network.api
+package com.example.mysimpleledger.data.api
 
 import com.example.mysimpleledger.data.model.request.body.LoginBody
 import com.example.mysimpleledger.data.model.request.body.RegistrationBody

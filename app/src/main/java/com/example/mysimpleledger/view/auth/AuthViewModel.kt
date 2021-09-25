@@ -1,11 +1,11 @@
-package com.example.mysimpleledger.ui.auth
+package com.example.mysimpleledger.view.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mysimpleledger.data.model.request.body.LoginBody
 import com.example.mysimpleledger.data.model.request.body.RegistrationBody
 import com.example.mysimpleledger.data.repository.AuthRepository
-import com.example.mysimpleledger.ui.TestUiState
+import com.example.mysimpleledger.view.TestUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job

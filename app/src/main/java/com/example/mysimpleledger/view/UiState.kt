@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui
+package com.example.mysimpleledger.view
 
 import com.example.mysimpleledger.data.model.Transaction
 

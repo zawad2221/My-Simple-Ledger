@@ -2,12 +2,12 @@ package com.example.mysimpleledger.data.repository
 
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.data.model.Transaction
-import com.example.mysimpleledger.data.model.request.TransactionBody
 import com.example.mysimpleledger.data.room.TransactionDatabase
-import com.example.mysimpleledger.network.api.TransactionApi
-import com.example.mysimpleledger.ui.TestUiState
-import com.example.mysimpleledger.ui.UiState
+import com.example.mysimpleledger.data.api.TransactionApi
+import com.example.mysimpleledger.view.TestUiState
+import com.example.mysimpleledger.view.UiState
 import com.example.mysimpleledger.utils.Event
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -18,8 +18,12 @@ import javax.inject.Inject
 
 class TransactionRepository @Inject constructor(
         private val transactionApi: TransactionApi,
-        private val db: TransactionDatabase
+        private val db: TransactionDatabase,
+        private val prefManager: PrefManager
         ) {
+
+//    @Inject
+//    lateinit var prefManager: PrefManager
     companion object {
 
     }
@@ -28,8 +32,13 @@ class TransactionRepository @Inject constructor(
     private val _transactionUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
     val transactionUiState: StateFlow<TestUiState> = _transactionUiState
 
+
+    //add transaction
     private val _newTransactionUiState = MutableStateFlow<UiState>(UiState.Empty)
     val newTransactionUiState: StateFlow<UiState> = _newTransactionUiState
+
+    private val _addTransactionUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
+    val addTransactionUiState: StateFlow<TestUiState> = _addTransactionUiState
 
     //test
     private val _transactionUiStateTest = MutableStateFlow<TestUiState>(TestUiState.Empty)
@@ -60,28 +69,54 @@ class TransactionRepository @Inject constructor(
         }
 
     }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun getAllTransaction(){
-        jobOffline = CoroutineScope(IO).launch {
-            try {
-                _transactionUiState.value = TestUiState.Loading
-                val transactions = transactionDao.getAllTransaction()
-                Log.d(javaClass.name, "got data ${transactions.size}")
-//            if(transactions.isNotEmpty())
-                _transactionUiState.value = TestUiState.Success(Event(transactions as List<Transaction>))
-//            else
-//                _transactionUiState.value = TestUiState.Empty
-                jobOffline?.cancel()
-            }
-            catch (e: Exception){
-                _transactionUiState.value = TestUiState.Error(Event("failed to load data"))
+    suspend fun saveTransactions(transactions: List<Transaction>){
+        jobOffline = Job()
+        jobOffline?.let {
+            CoroutineScope(Main+it).launch {
+                kotlin.runCatching {
+                    withContext(Main){
+                        _addTransactionUiState.value = TestUiState.Loading
+                    }
+                    transactionDao.insertTransactions(transactions)
+                }.onSuccess {
+                    withContext(Main){
+                        _addTransactionUiState.value = TestUiState.Success(Event((transactions)))
+                    }
+                }.onFailure {
+                    withContext(Main){
+                        _addTransactionUiState.value = TestUiState.Error(Event("failed to add data"))
+                    }
+                }
+
             }
         }
 
-
-
     }
+//    @Suppress("RedundantSuspendModifier")
+//    @WorkerThread
+//    suspend fun getAllTransaction(){
+//        jobOffline = CoroutineScope(IO).launch {
+//            try {
+//                _transactionUiState.value = TestUiState.Loading
+//                val transactions = transactionDao.getAllTransaction()
+//                Log.d(javaClass.name, "got data ${transactions.size}")
+////            if(transactions.isNotEmpty())
+//                _transactionUiState.value = TestUiState.Success(Event(transactions as List<Transaction>))
+////            else
+////                _transactionUiState.value = TestUiState.Empty
+//                jobOffline?.cancel()
+//            }
+//            catch (e: Exception){
+//                _transactionUiState.value = TestUiState.Error(Event("failed to load data"))
+//            }
+//        }
+//
+//
+//
+//    }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -119,7 +154,7 @@ class TransactionRepository @Inject constructor(
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun getAllTransactionTest(){
+    suspend fun getAllOfflineTransaction(){
         jobOffline = Job()
         jobOffline = CoroutineScope(IO).launch {
             try {
@@ -175,7 +210,8 @@ class TransactionRepository @Inject constructor(
     private val _transactionServerUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
     val transactionServerUiState: StateFlow<TestUiState> = _transactionServerUiState
     var serverJob: Job? = null
-    fun getTransactionByUserId(userId: String){
+    fun getTransactionByUserId(){
+        Log.d(javaClass.name, "got transaction from server repo")
         serverJob = Job()
 
             serverJob = CoroutineScope(IO).launch{
@@ -183,19 +219,19 @@ class TransactionRepository @Inject constructor(
                     withContext(Main){
                         _transactionServerUiState.value = TestUiState.Loading
                     }
-                    transactionApi.getTransactionByUserId(userId)
+                    transactionApi.getTransactionByUserId(prefManager.getEmail())
                 }.onSuccess {
                     if(it.isSuccessful && it.body()!=null){
                         withContext(Main){
                             _transactionServerUiState.value = TestUiState.Success(Event(it.body() as List<Transaction>))
-                            cancelJob()
+                            //cancelJob()
                         }
                     }
                     else{
                         withContext(Main){
                             _transactionServerUiState.value = TestUiState.Error(Event(it.message()))
                             Log.d(javaClass.name, "onFailure0 :${it.message()}")
-                            cancelJob()
+                            //cancelJob()
                         }
                     }
 
@@ -203,14 +239,14 @@ class TransactionRepository @Inject constructor(
                     withContext(Main){
                         _transactionServerUiState.value = TestUiState.Error(Event(it.toString()))
                         Log.d(javaClass.name, "onFailure: ${it.message}")
-                        cancelJob()
+                        //cancelJob()
                     }
                 }
 
             }
 
     }
-    fun cancelJob(){
+    fun cancelServerJob(){
         serverJob?.cancel()
     }
 

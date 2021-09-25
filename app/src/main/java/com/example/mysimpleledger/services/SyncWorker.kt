@@ -6,9 +6,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.mysimpleledger.data.model.Transaction
-import com.example.mysimpleledger.data.model.request.TransactionBody
 import com.example.mysimpleledger.data.repository.TransactionRepository
-import com.example.mysimpleledger.ui.TestUiState
+import com.example.mysimpleledger.view.TestUiState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
@@ -20,6 +19,9 @@ class SyncWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val transactionRepository: TransactionRepository
 ) : CoroutineWorker(appContext, workerParams) {
+
+
+
     private var numberOfDataToBackup: Int = 0
     var job: Job?=null
     init {
@@ -114,7 +116,7 @@ class SyncWorker @AssistedInject constructor(
 
 
     private suspend fun getTransactionFromServer(){
-        transactionRepository.getTransactionByUserId("rifat.rz@gmail.com")
+        transactionRepository.getTransactionByUserId()
         var serverJob: Job? = null
         serverJob = Job()
         serverJob = CoroutineScope(Dispatchers.IO).launch {

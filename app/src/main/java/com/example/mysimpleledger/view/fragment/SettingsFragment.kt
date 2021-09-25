@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.fragment
+package com.example.mysimpleledger.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.work.*
-import com.example.mysimpleledger.R
 import com.example.mysimpleledger.databinding.FragmentSettingsBinding
 import com.example.mysimpleledger.services.SyncWorker
 import dagger.hilt.android.AndroidEntryPoint

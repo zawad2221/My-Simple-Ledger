@@ -4,9 +4,8 @@ import com.example.mysimpleledger.data.model.request.body.LoginBody
 import com.example.mysimpleledger.data.model.request.body.RegistrationBody
 import com.example.mysimpleledger.data.model.request.response.LoginResponse
 import com.example.mysimpleledger.data.model.request.response.RegistrationResponse
-import com.example.mysimpleledger.network.api.AuthApi
-import com.example.mysimpleledger.ui.TestUiState
-import com.example.mysimpleledger.ui.UiState
+import com.example.mysimpleledger.data.api.AuthApi
+import com.example.mysimpleledger.view.TestUiState
 import com.example.mysimpleledger.utils.Event
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -50,6 +49,7 @@ class AuthRepository @Inject constructor(val authApi: AuthApi) {
     }
 
     suspend fun login(loginBody: LoginBody){
+
         job = Job()
         job?.let { theJob->
             CoroutineScope(IO + theJob).launch {
@@ -59,12 +59,12 @@ class AuthRepository @Inject constructor(val authApi: AuthApi) {
                     }
                     authApi.login(loginBody)
                 }.onSuccess {
-                    if(it.isSuccessful && it.body()!=null){
+                    if(it.isSuccessful && it.body()!=null && it.body()!!.Status.equals("Success")){
                         _loginDataState.value = TestUiState.Success(Event(it.body() as LoginResponse))
 
                     }
                     else{
-                        _loginDataState.value = TestUiState.Error(Event("Failed to login"))
+                        _loginDataState.value = TestUiState.Error(Event("Failed to login ${it.errorBody().toString()}"))
                     }
                 }.onFailure {
                     _loginDataState.value = TestUiState.Error(Event(it.message!!))

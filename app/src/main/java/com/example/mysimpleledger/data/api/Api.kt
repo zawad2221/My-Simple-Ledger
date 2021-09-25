@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.network.api
+package com.example.mysimpleledger.data.api
 
 class Api {
     companion object {

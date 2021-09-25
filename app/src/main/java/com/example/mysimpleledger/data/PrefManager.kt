@@ -13,6 +13,23 @@ class PrefManager @Inject constructor(val sharedPref: SharedPreferences, val sha
 
     }
 
+    fun saveUserEmail(email: String){
+        with(sharedPreferencesEditor) {
+            this?.putString(Constants.EMAIL_KEY, email)
+            this?.apply()
+        }
+    }
+    fun getEmail(): String{
+        return sharedPref.getString(Constants.EMAIL_KEY, "")!!
+    }
+
+    fun clearEmail(){
+        with(sharedPreferencesEditor) {
+            this.putString(Constants.EMAIL_KEY, "")
+            this.apply()
+        }
+    }
+
     fun getToken(): String{
         return sharedPref.getString(Constants.TOKEN_KEY, "")!!
     }

@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.auth.login;
+package com.example.mysimpleledger.view.auth.login;
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +14,15 @@ import com.example.mysimpleledger.data.model.request.body.LoginBody
 import com.example.mysimpleledger.data.model.request.response.LoginResponse
 
 import com.example.mysimpleledger.databinding.ActivityLoginBinding
-import com.example.mysimpleledger.ui.TestUiState
-import com.example.mysimpleledger.ui.auth.AuthViewModel
-import com.example.mysimpleledger.ui.auth.registration.RegistrationActivity
+import com.example.mysimpleledger.view.TestUiState
+import com.example.mysimpleledger.view.activity.MainActivity
+import com.example.mysimpleledger.view.auth.AuthViewModel
+import com.example.mysimpleledger.view.auth.registration.RegistrationActivity
 import com.example.mysimpleledger.utils.showErrorInTextInputLayout
 import com.example.mysimpleledger.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,6 +32,8 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityLoginBinding
 
     private val viewModel: AuthViewModel by viewModels()
+
+    var job: Job?= null
 
     @Inject
     lateinit var prefManager: PrefManager
@@ -92,13 +96,16 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
             showErrorInTextInputLayout(binding.tilPassword, "Required field")
             return
         }
-        loginObserve(getLoginBodyFromView())
+        val loginBody = getLoginBodyFromView()
+        prefManager.saveUserEmail(loginBody.userName!!)
+        loginObserve(loginBody)
     }
 
     @InternalCoroutinesApi
     private fun loginObserve(loginBody: LoginBody){
         viewModel.cancelJob()
-        lifecycleScope.launch {
+        job?.cancel()
+        job = lifecycleScope.launch {
             viewModel.login(loginBody)
             viewModel.loginDataState.collect {uiState->
                 when (uiState) {
@@ -112,7 +119,10 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
                         }
                         else{
                             data.token?.let { prefManager.saveToken(it) }
+
                             showSnackBar(binding.root, "Successfully Login")
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            finish()
                         }
                     }
                     is TestUiState.Loading -> {
@@ -120,6 +130,7 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
 
                     }
                     is TestUiState.Error -> {
+                        prefManager.clearEmail()
                         Log.d(javaClass.name, "failed to loign " + uiState.message?.getContentIfNotHandled())
                         showSnackBar(binding.root, "Failed to Login")
 

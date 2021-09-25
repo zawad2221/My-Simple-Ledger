@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.view_model
+package com.example.mysimpleledger.view.view_model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.data.repository.TransactionRepository
-import com.example.mysimpleledger.ui.TestUiState
-import com.example.mysimpleledger.ui.UiState
+import com.example.mysimpleledger.view.TestUiState
+import com.example.mysimpleledger.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -16,12 +16,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import okhttp3.internal.Util
 import javax.inject.Inject
 
 @HiltViewModel
 class TransactionViewModel @Inject constructor(private val transactionRepository: TransactionRepository): ViewModel() {
 
+    var isLoadedFromServer = false
     var job: Job? = null
 
     val transactionListLiveDate = MutableLiveData<List<Transaction>>()
@@ -30,21 +30,17 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
     //add transaction data
     private val _newTransactionUiState = MutableStateFlow<UiState>(UiState.Empty)
     val newTransactionUiState: StateFlow<UiState> = _newTransactionUiState
+    private val _saveTransactionUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
+    val saveTransactionUiState: StateFlow<TestUiState> = _saveTransactionUiState
 
     //transaction data
     private val _transactionUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
     val transactionUiState: StateFlow<TestUiState> = _transactionUiState
 
-    fun fakeData(){
-//        val transaction: Transaction = Transaction(1222,null,"2021-06-18",1000.0F,"Complete transaction","Rfiat",0,0,"rifat@gmail.com",null)
-//        val transaction1: Transaction = Transaction(1212,null,"2021-06-18",1000.0F,"Dena transaction","Zawad",1,1,"zawad@gmail.com",null)
-//        val transaction2: Transaction = Transaction(1212,null,"2021-06-18",1000.0F,"Paona transaction","Hossain",1,2,"hossain@gmail.com",null)
-//        val transaction3: Transaction = Transaction(1212,null,"2021-06-18",1000.0F,"Complete transaction","Rfiat",0,0,"rifat@gmail.com",null)
-//        val transaction4: Transaction = Transaction(1212,null,"2021-06-18",1000.0F,"Dena transaction","Zawad",1,1,"zawad@gmail.com",null)
-//        val transaction5: Transaction = Transaction(1212,null,"2021-06-18",1000.0F,"Paona transaction","Hossain",1,2,"hossain@gmail.com",null)
-//        val tl: List<Transaction> = listOf(transaction, transaction1, transaction2, transaction3, transaction4, transaction5)
-//        transactionListLiveDate.value = tl
-    }
+
+    //server data
+    private val _transactionServerUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
+    val transactionServerUiState: StateFlow<TestUiState> = _transactionServerUiState
 
     @InternalCoroutinesApi
     suspend fun addTransaction(transactions: List<Transaction>){
@@ -61,10 +57,29 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
         }
     }
 
+    suspend fun saveTransaction(transactions: List<Transaction>){
+        viewModelScope.launch {
+            transactionRepository.saveTransactions(transactions)
+            transactionRepository.addTransactionUiState.collect {
+                _saveTransactionUiState.value = it
+            }
+        }
+    }
+
+    suspend fun getTransactionFromServer(){
+
+        viewModelScope.launch {
+            transactionRepository.getTransactionByUserId()
+            transactionRepository.transactionServerUiState.collect{
+                _transactionServerUiState.value = it
+            }
+        }
+
+    }
 
     suspend fun getTransaction(){
         job = viewModelScope.launch {
-            transactionRepository.getAllTransactionTest()
+            transactionRepository.getAllOfflineTransaction()
             transactionRepository.transactionUiStateTest.collect{
                 Log.d(javaClass.name, "got data update $it")
                 _transactionUiState.value = it
@@ -81,6 +96,10 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
 
 
 
+    }
+
+    fun cancelJob(){
+        transactionRepository.cancelServerJob()
     }
 
 }

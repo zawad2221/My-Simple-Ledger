@@ -1,20 +1,18 @@
 package com.example.mysimpleledger.di
 
 import android.app.Application
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.data.repository.AuthRepository
 import com.example.mysimpleledger.data.repository.TransactionRepository
 import com.example.mysimpleledger.data.room.TransactionDatabase
-import com.example.mysimpleledger.network.api.Api
-import com.example.mysimpleledger.network.api.AuthApi
-import com.example.mysimpleledger.network.api.TransactionApi
+import com.example.mysimpleledger.data.api.Api
+import com.example.mysimpleledger.data.api.AuthApi
+import com.example.mysimpleledger.data.api.TransactionApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -50,8 +48,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTransactionRepository(transactionApi: TransactionApi,
-                                     db: TransactionDatabase): TransactionRepository =
-            TransactionRepository(transactionApi, db)
+                                     db: TransactionDatabase, prefManager: PrefManager): TransactionRepository =
+            TransactionRepository(transactionApi, db, prefManager)
 
     @Provides
     @Singleton

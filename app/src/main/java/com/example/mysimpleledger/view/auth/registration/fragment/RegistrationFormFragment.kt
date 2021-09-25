@@ -1,4 +1,4 @@
-package com.example.mysimpleledger.ui.auth.registration.fragment
+package com.example.mysimpleledger.view.auth.registration.fragment
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -16,13 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.mysimpleledger.R
-import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.data.model.request.body.RegistrationBody
-import com.example.mysimpleledger.data.model.request.response.RegistrationResponse
 import com.example.mysimpleledger.databinding.FragmentRegistrationFormBinding
-import com.example.mysimpleledger.ui.TestUiState
-import com.example.mysimpleledger.ui.auth.AuthViewModel
-import com.example.mysimpleledger.ui.auth.login.LoginActivity
+import com.example.mysimpleledger.view.TestUiState
+import com.example.mysimpleledger.view.auth.AuthViewModel
+import com.example.mysimpleledger.view.auth.login.LoginActivity
 import com.example.mysimpleledger.utils.showErrorInTextInputLayout
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -168,6 +166,8 @@ class RegistrationFormFragment :
                         }
                         else{
                             showSnackBar("Successfully Register")
+                            requireActivity().finish()
+                            startActivity(Intent(requireContext(), LoginActivity::class.java))
                         }
                     }
                     is TestUiState.Loading -> {
