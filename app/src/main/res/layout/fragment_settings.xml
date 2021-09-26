@@ -80,11 +80,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/backup_last_backup_tag"
+                android:text="@string/last_sync"
                 android:textColor="@color/textColor"
                 android:layout_marginTop="44dp"
                 />
             <TextView
+                android:id="@+id/tv_last_sync"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="2021-07-10  01:11:00 PM"

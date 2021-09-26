@@ -14,12 +14,11 @@ import com.example.mysimpleledger.data.model.request.body.LoginBody
 import com.example.mysimpleledger.data.model.request.response.LoginResponse
 
 import com.example.mysimpleledger.databinding.ActivityLoginBinding
+import com.example.mysimpleledger.utils.*
 import com.example.mysimpleledger.view.TestUiState
 import com.example.mysimpleledger.view.activity.MainActivity
 import com.example.mysimpleledger.view.auth.AuthViewModel
 import com.example.mysimpleledger.view.auth.registration.RegistrationActivity
-import com.example.mysimpleledger.utils.showErrorInTextInputLayout
-import com.example.mysimpleledger.utils.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -32,6 +31,11 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityLoginBinding
 
     private val viewModel: AuthViewModel by viewModels()
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
+    @Inject
+    lateinit var snackbarHandler: SnackbarHandler
 
     var job: Job?= null
 
@@ -64,6 +68,7 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
         }
         return true
     }
+
 
     private fun getEmail(): String {
         return binding.etEmail.text.toString()
@@ -101,6 +106,13 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
         loginObserve(loginBody)
     }
 
+    private fun showProgressDialog(){
+        setVisibilityOfView(listOf(binding.progressBar), View.VISIBLE)
+    }
+    private fun hideProgressDialog(){
+        setVisibilityOfView(listOf(binding.progressBar), View.GONE)
+    }
+
     @InternalCoroutinesApi
     private fun loginObserve(loginBody: LoginBody){
         viewModel.cancelJob()
@@ -112,6 +124,8 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
                     is TestUiState.Empty ->{
                     }
                     is TestUiState.Success -> {
+                        hideProgressDialog()
+                        binding.root.enable(true)
                         val data = uiState.data?.getContentIfNotHandled() as LoginResponse
                         if(data==null){
                             Log.d(javaClass.name, "data collected in 11")
@@ -120,19 +134,24 @@ class LoginActivity: AppCompatActivity(), View.OnClickListener {
                         else{
                             data.token?.let { prefManager.saveToken(it) }
 
-                            showSnackBar(binding.root, "Successfully Login")
+                            snackbarHandler.showSuccess(this@LoginActivity)
                             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                             finish()
                         }
                     }
                     is TestUiState.Loading -> {
                         Log.d(javaClass.name, "loading data ")
+                        showProgressDialog()
+                        binding.root.enable(false)
 
                     }
                     is TestUiState.Error -> {
+                        hideProgressDialog()
+                        binding.root.enable(true)
                         prefManager.clearEmail()
                         Log.d(javaClass.name, "failed to loign " + uiState.message?.getContentIfNotHandled())
-                        showSnackBar(binding.root, "Failed to Login")
+//                        showSnackBar(binding.root, "Failed to Login")
+                        errorHandler.handleError(errorHandler.parse(Int.MAX_VALUE), this@LoginActivity)
 
                     }
                 }

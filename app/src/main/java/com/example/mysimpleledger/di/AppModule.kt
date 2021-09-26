@@ -10,6 +10,8 @@ import com.example.mysimpleledger.data.room.TransactionDatabase
 import com.example.mysimpleledger.data.api.Api
 import com.example.mysimpleledger.data.api.AuthApi
 import com.example.mysimpleledger.data.api.TransactionApi
+import com.example.mysimpleledger.utils.ErrorHandler
+import com.example.mysimpleledger.utils.SnackbarHandler
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -74,6 +76,15 @@ object AppModule {
         sharedPref,
         sharedPreferencesEditor
     )
+
+    @Provides
+    @Singleton
+    fun provideSnackbarHandler() = SnackbarHandler()
+
+    @Provides
+    @Singleton
+    fun provideErrorHandler(snackbarHandler: SnackbarHandler, prefManager: PrefManager) =
+        ErrorHandler(snackbarHandler, prefManager)
 
 
 }

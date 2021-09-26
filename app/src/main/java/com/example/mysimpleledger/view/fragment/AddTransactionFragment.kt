@@ -13,18 +13,21 @@ import com.example.mysimpleledger.R
 import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.databinding.AddTransactionFormBinding
 import com.example.mysimpleledger.databinding.FragmentAddTransactionBinding
+import com.example.mysimpleledger.utils.SnackbarHandler
 import com.example.mysimpleledger.view.UiState
 import com.example.mysimpleledger.view.view_model.TransactionViewModel
 import com.example.mysimpleledger.utils.convertDateToServerFormat
+import com.example.mysimpleledger.utils.showErrorInTextInput
+import com.example.mysimpleledger.utils.showErrorInTextInputLayout
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
@@ -32,6 +35,9 @@ class AddTransactionFragment : Fragment() {
 
     lateinit var mFragmentAddTransactionBinding: FragmentAddTransactionBinding
     private val mTransactionViewModel: TransactionViewModel by viewModels()
+
+    @Inject
+    lateinit var snackbarHandler: SnackbarHandler
 
     //var datePicker =
     ///var builder: MaterialDatePicker.Builder<*> = datePicker()
@@ -57,7 +63,13 @@ class AddTransactionFragment : Fragment() {
         return mFragmentAddTransactionBinding.root
     }
 
-    
+    private fun clearUiData(){
+        with(getAddTransactionForm()){
+            amountTextField.text = null
+            contactNameTextField.text =null
+            descriptionTextField.text = null
+        }
+    }
 
     @InternalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,9 +87,10 @@ class AddTransactionFragment : Fragment() {
 
                 when(it){
                     is UiState.Success ->{
-                        showToast("Successfully added")
+                        snackbarHandler.showSuccessMsg("Successfully added", requireContext())
                         Log.d(javaClass.name, "success to add data ${it.data[0].Amount}")
                         setProgressBarVisibility(View.GONE)
+                        clearUiData()
                     }
                     is UiState.Loading ->{
                         Log.d(javaClass.name, "adding data ")
@@ -188,9 +201,6 @@ class AddTransactionFragment : Fragment() {
     private fun getAddTransactionForm(): AddTransactionFormBinding =
             mFragmentAddTransactionBinding.addTransactionForm
 
-    private fun showErrorInTextInput(layout: TextInputLayout, message: String){
-        layout.error=message
-    }
     private fun getAmount(): String{
         Log.d(javaClass.name, "get amount: "+getAddTransactionForm().amountTextField.toString())
         return getAddTransactionForm().amountTextField.text.toString()
@@ -238,7 +248,13 @@ class AddTransactionFragment : Fragment() {
             showErrorInTextInput(getAddTransactionForm().descriptionTextFieldLayout, "invalid input")
             return false
         }
-        return true
+        else{
+            showErrorInTextInputLayout(getAddTransactionForm().amountTextFieldLayout, null)
+            showErrorInTextInputLayout(getAddTransactionForm().contactNameTextFieldLayout, null)
+            showErrorInTextInputLayout(getAddTransactionForm().descriptionTextFieldLayout, null)
+            return true
+        }
+
     }
 
     private fun setProgressBarVisibility(visibility: Int){

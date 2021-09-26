@@ -18,6 +18,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.mysimpleledger.R
 import com.example.mysimpleledger.data.model.request.body.RegistrationBody
 import com.example.mysimpleledger.databinding.FragmentRegistrationFormBinding
+import com.example.mysimpleledger.utils.enable
+import com.example.mysimpleledger.utils.setVisibilityOfView
 import com.example.mysimpleledger.view.TestUiState
 import com.example.mysimpleledger.view.auth.AuthViewModel
 import com.example.mysimpleledger.view.auth.login.LoginActivity
@@ -159,6 +161,8 @@ class RegistrationFormFragment :
                     is TestUiState.Empty ->{
                     }
                     is TestUiState.Success -> {
+                        hideProgressDialog()
+                        binding.root.enable(true)
                         val data = uiState.data?.getContentIfNotHandled()
                         if(data==null){
                             Log.d(javaClass.name, "data collected in 11")
@@ -171,10 +175,14 @@ class RegistrationFormFragment :
                         }
                     }
                     is TestUiState.Loading -> {
+                        showProgressDialog()
+                        binding.root.enable(false)
                         Log.d(javaClass.name, "loading data ")
 
                     }
                     is TestUiState.Error -> {
+                        hideProgressDialog()
+                        binding.root.enable(true)
                         Log.d(javaClass.name, "failed to add " + uiState.message?.getContentIfNotHandled())
                         showSnackBar("Failed to Register")
 
@@ -183,6 +191,12 @@ class RegistrationFormFragment :
             }
 
         }
+    }
+    private fun showProgressDialog(){
+        setVisibilityOfView(listOf(binding.progressBar), View.VISIBLE)
+    }
+    private fun hideProgressDialog(){
+        setVisibilityOfView(listOf(binding.progressBar), View.GONE)
     }
     private fun getRegBodyFromView(): RegistrationBody{
         return RegistrationBody(

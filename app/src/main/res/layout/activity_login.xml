@@ -89,7 +89,7 @@
         android:textAllCaps="false"
         android:textStyle="bold"
         android:text="@string/sign_in"
-        android:backgroundTint="#FAE103"
+        android:backgroundTint="@color/yellow"
         android:textColor="@color/textColor"
         />
     <TextView
@@ -104,5 +104,16 @@
         android:text="@string/dosnt_have_account"
         android:textColor="@color/textColor"
         android:textSize="18dp"
+        />
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,5 +39,8 @@
     <string name="password_condition1">Password must be 8 characters</string>
     <string name="password_condition2">Password must have 1 upper case (AB) &amp; 1 lower case letter  (ab)</string>
     <string name="password_condition3"><![CDATA[Password must have 1 number (123) and Special character]]></string>
+    <string name="internet_error">"check internet connection "</string>
+    <string name="success">Success</string>
+    <string name="last_sync">Last sync</string>
 
 </resources>

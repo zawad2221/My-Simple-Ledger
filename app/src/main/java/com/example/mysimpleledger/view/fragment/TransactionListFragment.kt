@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.view.adapter.TransactionRecyclerAdapter
 import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.view.view_model.TransactionViewModel
@@ -20,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -30,6 +32,9 @@ class TransactionListFragment : Fragment() {
     private val mTransactionViewModel: TransactionViewModel by viewModels()
     var job: Job? = null
     var dataGetJob: Job? = null
+
+    @Inject
+    lateinit var prefManager: PrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +116,7 @@ class TransactionListFragment : Fragment() {
 
                         }
                         is TestUiState.Success->{
+                            prefManager.saveLastSyncDateTime()
                             getTransaction()
                         }
                     }

@@ -2,6 +2,7 @@ package com.example.mysimpleledger.data
 
 import android.content.SharedPreferences
 import com.example.mysimpleledger.utils.Constants
+import com.example.mysimpleledger.utils.DateAndTimeHelper.getLocalDateTime
 import javax.inject.Inject
 
 class PrefManager @Inject constructor(val sharedPref: SharedPreferences, val sharedPreferencesEditor: SharedPreferences.Editor) {
@@ -11,6 +12,15 @@ class PrefManager @Inject constructor(val sharedPref: SharedPreferences, val sha
             this?.apply()
         }
 
+    }
+
+    fun saveLastSyncDateTime(){
+        with(sharedPreferencesEditor){
+            this.putString(Constants.DATE_TIME_KEY, getLocalDateTime())
+        }
+    }
+    fun getLastSyncDateTime(): String {
+        return sharedPref.getString(Constants.DATE_TIME_KEY, "")!!
     }
 
     fun saveUserEmail(email: String){
@@ -41,6 +51,7 @@ class PrefManager @Inject constructor(val sharedPref: SharedPreferences, val sha
         }
 
     }
+
 
 
 }

@@ -6,13 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.work.*
+import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.databinding.FragmentSettingsBinding
 import com.example.mysimpleledger.services.SyncWorker
+import com.example.mysimpleledger.utils.makeInVisible
+import com.example.mysimpleledger.utils.makeVisible
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
    private lateinit var mFragmentSettingsBinding: FragmentSettingsBinding
+
+   @Inject
+   lateinit var prefManager: PrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +34,8 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+
         mFragmentSettingsBinding.toolBar.setNavigationOnClickListener {
             onBackPress()
         }
@@ -44,6 +53,18 @@ class SettingsFragment : Fragment() {
             // initialize WorkManager
             //activity?.applicationContext?.let { it1 -> WorkManager.initialize(it1, myConfig) }
             activity?.let { it1 -> WorkManager.getInstance(it1.applicationContext).beginWith(work).enqueue() }
+        }
+    }
+
+    private fun initView(){
+        with(mFragmentSettingsBinding){
+            if(prefManager.getLastSyncDateTime().isEmpty()){
+                tvLastSync.makeInVisible()
+            }
+            else{
+                tvLastSync.makeVisible()
+                tvLastSync.text = prefManager.getLastSyncDateTime()
+            }
         }
     }
 

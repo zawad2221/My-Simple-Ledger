@@ -14,6 +14,7 @@ import androidx.navigation.ui.NavigationUI
 import com.example.mysimpleledger.R
 import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.databinding.ActivityMainBinding
+import com.example.mysimpleledger.utils.DateAndTimeHelper.getLocalDateTime
 import com.example.mysimpleledger.view.auth.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
         initNavController()
         initNavigation()
         fragmentPageChangeListener()
+
+        Log.d(javaClass.name, "local date time ${getLocalDateTime()}")
 
 
 
