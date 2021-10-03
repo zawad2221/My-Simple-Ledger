@@ -27,6 +27,10 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
     val transactionListLiveDate = MutableLiveData<List<Transaction>>()
     val transactionList: LiveData<List<Transaction>> = transactionListLiveDate
 
+    //new offline transaction
+    private val _newAllTransactionUiState = MutableStateFlow<TestUiState>(TestUiState.Empty)
+    val newAllTransactionUiState: StateFlow<TestUiState> = _newAllTransactionUiState
+
     //add transaction data
     private val _newTransactionUiState = MutableStateFlow<UiState>(UiState.Empty)
     val newTransactionUiState: StateFlow<UiState> = _newTransactionUiState
@@ -72,6 +76,17 @@ class TransactionViewModel @Inject constructor(private val transactionRepository
             transactionRepository.getTransactionByUserId()
             transactionRepository.transactionServerUiState.collect{
                 _transactionServerUiState.value = it
+            }
+        }
+
+    }
+
+    suspend fun getNewTransactionFromOffline(){
+
+        viewModelScope.launch {
+            transactionRepository.getAllNewTransaction()
+            transactionRepository.newAllTransactionUiState.collect{
+                _newAllTransactionUiState.value = it
             }
         }
 

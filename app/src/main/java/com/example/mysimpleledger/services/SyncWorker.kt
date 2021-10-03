@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.mysimpleledger.data.PrefManager
 import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.data.repository.TransactionRepository
 import com.example.mysimpleledger.view.TestUiState
@@ -12,6 +13,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
@@ -23,6 +25,8 @@ class SyncWorker @AssistedInject constructor(
 
 
     private var numberOfDataToBackup: Int = 0
+    @Inject
+    lateinit var prefManager: PrefManager
     var job: Job?=null
     init {
 
@@ -150,6 +154,7 @@ class SyncWorker @AssistedInject constructor(
                 Log.d(javaClass.name, "got updated data update $it")
                 when (it) {
                     is TestUiState.Success -> {
+                        prefManager.saveLastSyncDateTime()
                         it.data.let { data ->
                             val result = data?.getContentIfNotHandled()
                             result?.let { notNullResult ->

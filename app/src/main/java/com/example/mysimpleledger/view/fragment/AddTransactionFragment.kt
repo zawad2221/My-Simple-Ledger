@@ -87,7 +87,7 @@ class AddTransactionFragment : Fragment() {
 
                 when(it){
                     is UiState.Success ->{
-                        snackbarHandler.showSuccessMsg("Successfully added", requireContext())
+                        snackbarHandler.showSuccessMsg("Successfully added", requireActivity())
                         Log.d(javaClass.name, "success to add data ${it.data[0].Amount}")
                         setProgressBarVisibility(View.GONE)
                         clearUiData()

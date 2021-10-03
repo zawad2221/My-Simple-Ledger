@@ -1,22 +1,34 @@
 package com.example.mysimpleledger.view.fragment
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.work.*
 import com.example.mysimpleledger.data.PrefManager
+import com.example.mysimpleledger.data.model.Transaction
 import com.example.mysimpleledger.databinding.FragmentSettingsBinding
 import com.example.mysimpleledger.services.SyncWorker
+import com.example.mysimpleledger.utils.makeGone
 import com.example.mysimpleledger.utils.makeInVisible
 import com.example.mysimpleledger.utils.makeVisible
+import com.example.mysimpleledger.view.TestUiState
+import com.example.mysimpleledger.view.view_model.TransactionViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import com.example.mysimpleledger.R
+
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
    private lateinit var mFragmentSettingsBinding: FragmentSettingsBinding
+    private val mTransactionViewModel: TransactionViewModel by viewModels()
 
    @Inject
    lateinit var prefManager: PrefManager
@@ -54,14 +66,45 @@ class SettingsFragment : Fragment() {
             //activity?.applicationContext?.let { it1 -> WorkManager.initialize(it1, myConfig) }
             activity?.let { it1 -> WorkManager.getInstance(it1.applicationContext).beginWith(work).enqueue() }
         }
+        observeNewTransaction()
+    }
+
+    private fun observeNewTransaction(){
+        lifecycleScope.launchWhenCreated {
+            mTransactionViewModel.getNewTransactionFromOffline()
+            mTransactionViewModel.newAllTransactionUiState.collect {
+                when(it){
+                    is TestUiState.Success->{
+                        val data = it.data?.getContentIfNotHandled() as List<Transaction>
+                        if(!data.isNullOrEmpty()){
+                            Log.d(TAG, "data backup status: not all backup")
+                            mFragmentSettingsBinding.apply {
+                                backupStatus.text = resources.getString(R.string.backup_status_not_backup)
+                                ivBackup.setImageResource(R.drawable.cloud_not_backup)
+                            }
+
+                        }
+                        else{
+                            Log.d(TAG, "data backup status:all backup")
+                            mFragmentSettingsBinding.apply {
+                                backupStatus.text = resources.getString(R.string.backup_status_backup)
+                                ivBackup.setImageResource(R.drawable.cloud_backup_done)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initView(){
         with(mFragmentSettingsBinding){
             if(prefManager.getLastSyncDateTime().isEmpty()){
-                tvLastSync.makeInVisible()
+                tvLastSync.makeGone()
+                tvLastSyncLable.makeGone()
             }
             else{
+                tvLastSyncLable.makeVisible()
                 tvLastSync.makeVisible()
                 tvLastSync.text = prefManager.getLastSyncDateTime()
             }
