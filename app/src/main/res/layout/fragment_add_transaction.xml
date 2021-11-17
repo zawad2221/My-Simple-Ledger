@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.AddTransactionFragment">
+    tools:context=".view.fragment.AddTransactionFragment">
 
     <include layout="@layout/add_transaction_form"
         android:id="@+id/addTransactionForm"/>

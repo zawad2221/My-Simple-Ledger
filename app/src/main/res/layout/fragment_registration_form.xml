@@ -4,38 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.auth.registration.fragment.RegistrationFormFragment">
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_user_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:boxBackgroundMode="outline"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:hintTextColor="@color/textColor"
-        android:hint="@string/user_name"
-        app:boxStrokeColor="@color/textColor"
-        >
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textColor"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:textCursorDrawable="@drawable/text_cursor"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+    tools:context=".view.auth.registration.fragment.RegistrationFormFragment">
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/til_user_name"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -84,11 +58,70 @@
             android:textCursorDrawable="@drawable/text_cursor"
             />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_password_condition1"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/edit_text_label_start_margin"
+        android:layout_marginTop="26dp"
+
+        android:drawableStart="@drawable/ic_check_circle"
+        android:drawablePadding="6dp"
+
+        android:text="@string/password_condition1"
+        android:textColor="@color/midGreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_password" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_password_condition2"
+        style="@style/H3Avenir"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/edit_text_label_start_margin"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="80dp"
+        android:drawableStart="@drawable/ic_orange_cross"
+        android:drawablePadding="6dp"
+        android:text="@string/password_condition2"
+        android:textColor="@color/colorOrange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_password_condition1" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_password_condition3"
+        style="@style/H3Avenir"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/edit_text_label_start_margin"
+        android:layout_marginTop="8dp"
+
+        android:layout_marginEnd="90dp"
+        android:drawableStart="@drawable/silver_circle"
+        android:drawablePadding="6dp"
+
+        android:text="@string/password_condition3"
+        android:textColor="@color/colorTextLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/tv_password_condition2"
+
+        />
     <Button
         android:id="@+id/bt_sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/til_password"
+        app:layout_constraintTop_toBottomOf="@id/tv_password_condition3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
@@ -117,6 +150,18 @@
         android:text="@string/already_have_account"
         android:textColor="@color/textColor"
         android:textSize="18dp"
+        />
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

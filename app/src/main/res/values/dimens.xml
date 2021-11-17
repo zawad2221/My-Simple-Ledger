@@ -10,4 +10,5 @@
     <dimen name="backup_status_card_elevation">11dp</dimen>
     <dimen name="backup_status_card_corner_radius">11dp</dimen>
     <dimen name="backup_status_card_top_margin">22dp</dimen>
+    <dimen name="edit_text_label_start_margin">16dp</dimen>
 </resources>

@@ -16,11 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MySimpleLedger"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.example.mysimpleledger.ui.auth.registration.RegistrationActivity"></activity>
-        <activity android:name="com.example.mysimpleledger.ui.auth.login.LoginActivity">
+        <activity android:name="com.example.mysimpleledger.view.auth.registration.RegistrationActivity"></activity>
+        <activity android:name="com.example.mysimpleledger.view.auth.login.LoginActivity">
 
         </activity>
-        <activity android:name=".ui.activity.MainActivity">
+        <activity android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

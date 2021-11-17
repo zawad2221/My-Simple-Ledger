@@ -18,7 +18,7 @@
     <string name="base_url">www.something.com/</string>
     <string name="transaction_label">Transaction</string>
     <string name="menu_settings_title">Settings</string>
-    <string name="backup_status_backup">"All data is backed up. "</string>
+    <string name="backup_status_backup">All data is backed up.</string>
     <string name="backup_status_not_backup">Not all data is backed up.</string>
     <string name="backup_last_backup_tag">Last backup</string>
     <string name="auto_sync_label">Auto Sync</string>
@@ -36,4 +36,12 @@
     <string name="code">Enter Code</string>
     <string name="submit">Submit</string>
     <string name="edit_mail"><u>Edit email</u></string>
+    <string name="password_condition1">Password must be 8 characters</string>
+    <string name="password_condition2">Password must have 1 upper case (AB) &amp; 1 lower case letter  (ab)</string>
+    <string name="password_condition3"><![CDATA[Password must have 1 number (123) and Special character]]></string>
+    <string name="internet_error">"check internet connection "</string>
+    <string name="success">Success</string>
+    <string name="last_sync">Last sync</string>
+    <string name="status_not_backup">Not all data is backed up.</string>
+
 </resources>
